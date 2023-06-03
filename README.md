@@ -1,1 +1,1 @@
-# getFit-backend
+# get-fit backend
