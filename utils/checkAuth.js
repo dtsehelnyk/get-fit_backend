@@ -19,13 +19,10 @@ export default (req, res, next) => {
             });
         }
     } else {
-        logger(err, 'alert');
+        logger('You don\'t have an access', 'alert');
 
         res.status(403).json({
             message: 'You don\'t have an access',
         });
     }
-
-    // res.send(token);
-    // next();
 }
