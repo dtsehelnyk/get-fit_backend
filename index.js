@@ -1,13 +1,24 @@
 import express from "express";
-
 import mongoose from "mongoose";
-import { registerValidation, loginvalidation } from "./validations/auth.js";
-import { commonExTemplateValidation, workoutValidation } from "./validations/commonExercise.js";
-import { logger } from './utils/logger.js';
-import checkAuth from "./utils/checkAuth.js";
-import * as UserController from './controllers/UserController.js';
-import * as CommonExController from "./controllers/CommonExController.js";
-import * as WorkoutController from "./controllers/WorkoutController.js";
+
+import { workoutValidation } from "./validations/commonExercise.js";
+import {
+    registerValidation,
+    loginValidation,
+    updateValidation
+} from "./validations/user.js";
+
+import {
+    logger,
+    checkAuth,
+    handleValidationErrors
+} from './utils/index.js';
+
+import {
+    UserController,
+    CommonExController,
+    WorkoutController
+} from './controllers/index.js';
 
 const PORT = 5050;
 const uri = 'mongodb+srv://admin:159357753951Gf@cluster0.3kibbus.mongodb.net/getFit?retryWrites=true&w=majority';
@@ -24,20 +35,28 @@ app.get('/', (req, res) => {
     res.send('It works!');
 });
 
-app.post('/auth/register', registerValidation, UserController.register );
-app.post('/auth/login', loginvalidation, UserController.login);
-app.get('/auth/me', checkAuth, UserController.getMe);
+app.post('/auth/register', registerValidation, handleValidationErrors, UserController.register );
+app.post('/auth/login', loginValidation, handleValidationErrors, UserController.login);
+
+app.get('/users/me', checkAuth, UserController.getMe);
+app.delete('/users/me', checkAuth, UserController.remove);
+// TODO: add validation
+app.patch('/users/me', checkAuth, updateValidation, handleValidationErrors, UserController.update);
 // app.patch('/users/:userId', checkAuth, UserController.update);
 
-app.get('/exercises', CommonExController.getAll);
-app.get('/exercises/:id', CommonExController.getOne);
+app.get('/commonExercises', CommonExController.getAll);
+app.get('/commonExercises/:id', CommonExController.getOne);
 // TODO: add roles or security check
-app.post('/exercises', commonExTemplateValidation, CommonExController.create);
+// app.post('/commonExercises', commonExTemplateValidation, CommonExController.create);
+// app.delete('/commonExercises/:exId', commonExTemplateValidation, CommonExController.remove);
+// app.patch('/commonExercises/:exId', commonExTemplateValidation, CommonExController.update);
 
-app.get('/:userId/workouts', checkAuth, WorkoutController.getAll);
-app.post('/:userId/workouts', checkAuth, workoutValidation, WorkoutController.create);
-app.get('/workouts/:workoutId', WorkoutController.getOne);
-app.patch('/workouts/:setId', WorkoutController.update);
+app.get('/workouts', checkAuth, WorkoutController.getAll);
+app.post('/workouts', checkAuth, workoutValidation, handleValidationErrors, WorkoutController.create);
+app.get('/workouts/:workoutId', checkAuth, WorkoutController.getOne);
+app.delete('/workouts', checkAuth, WorkoutController.remove);
+// TODO: add validation
+app.patch('/workouts/:setId', checkAuth, WorkoutController.update);
 
 app.listen(PORT, (err) => {
     if(err) {

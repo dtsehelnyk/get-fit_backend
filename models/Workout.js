@@ -4,8 +4,7 @@ const ExSetSchema = new Schema({
     load: Number,
     // ???
     measure: String,
-    reps: Number,
-    duration: Number,
+    result: Number,
     additional: String,
 });
 

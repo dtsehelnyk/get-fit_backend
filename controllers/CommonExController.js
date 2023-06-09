@@ -1,21 +1,9 @@
 import { validationResult } from "express-validator";
-import { logger } from "../utils/logger.js";
+import { logger } from "../utils/index.js";
 import CommonExerciseModel from "../models/CommonExercise.js";
 
 export const create = async (req, res) => {
     try {
-        const errors = validationResult(req);
-
-        if (!errors.isEmpty()) {
-            logger(
-                `Could not create a template.
-                Error: ${JSON.stringify(errors)}`,
-                'alert'
-            );
-
-            return res.status(400).json(errors.array());
-        }
-
         const doc = new CommonExerciseModel({
             name: req.body.name,
             type: req.body.type,

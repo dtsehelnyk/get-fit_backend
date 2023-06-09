@@ -1,10 +1,10 @@
 import { validationResult } from "express-validator";
-import { logger } from "../utils/logger.js";
+import { logger } from "../utils/index.js";
 import WorkoutModel from "../models/Workout.js";
 
 export const getAll = async (req, res) => {
     try {
-        const doc = await WorkoutModel.findOne({userId: req.params.userId});
+        const doc = await WorkoutModel.findOne({userId: req.userId});
 
         logger('A list of workouts has been provided', 'note');
         res.status(200).json(doc);
@@ -49,7 +49,7 @@ export const create = async (req, res) => {
     try {
         await WorkoutModel.updateOne(
             {
-                userId: req.params.userId,
+                userId: req.userId,
             },
             {
                 $push: {
@@ -82,32 +82,20 @@ export const update = async (req, res) => {
     // }
 
     try {
-
-        // await new WorkoutUserDaysModel.findOneAndUpdate(
-        //     { days: { $elemMatch: { _id: req.params.workoutId } } },
-        //     { $set:
-        //         {
-        //             days: [req.body]
-        //         }
-        //     }
-        // );
-    
         await WorkoutModel.updateOne(
             {
-                'days.exercises.sets._id': req.params.setId,
+                "days.exercises.sets._id": "648017c11ba364dbe2508707",
             },
             {
                 '$set': {
-                    // 'days.$[el_1].exercises.$[el_2].sets.$[el_3].duration': 10,
-                    'days.$[el1].exercises.$[el2].sets.$[el4].reps': 10
+                    'days.$[el1].exercises.$[el2].sets.$.result': 10
                 }
             },
             {
                 arrayFilters: [
                     { 'el1.exercises': { '$exists': true } },
-                    { 'el2.sets': { '$exists': true } },
+                    { 'el2.sets._id': '648017c11ba364dbe2508707' },
                     // { 'el_3.duration': { '$exists': true } },
-                    { 'el4.reps': { '$exists': true } }
                 ]
             }
         );
@@ -115,12 +103,29 @@ export const update = async (req, res) => {
         logger('done', 'note');
         
         res.status(200).json({
-            message: 'Workout has been added',
+            message: 'Workout has been changed',
         });
     } catch (err) {
         logger(err, 'alert');
         res.status(500).json({
             message: `Workout has not been added. Error: ${err}`,
+        });
+    }
+}
+
+// TODO: fix search
+export const remove = async (req, res) => {
+    try {
+        await WorkoutModel.findByIdAndRemove(req.params.setId);
+
+        logger('Workout has been deleted', 'note');
+        res.status(200).json({
+            message: 'Workout has been deleted',
+        });
+    } catch (err) {
+        logger(err, 'alert');
+        res.status(500).json({
+            message: `Workout has not been deleted. Error: ${err}`,
         });
     }
 }

@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { logger } from './logger.js';
+import { logger } from './index.js';
 
 export default (req, res, next) => {
     const token = (req.headers.authorization || '').replace(/Bearer\s?/, '');

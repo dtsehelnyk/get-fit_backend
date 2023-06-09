@@ -34,7 +34,11 @@ const UserSchema = new Schema({
     //     required: true,
     //     default: [],
     // }
-    // Theme: {}
+    themeId: {
+        type: String,
+        required: true,
+        default: 'basic',
+    }
 }, {
     timestamps: true,
 });
