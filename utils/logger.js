@@ -1,4 +1,4 @@
-export const logger = (message, type) => {
+export default (message, type) => {
     switch (type) {
         case 'success':
             console.log('\x1b[32m', message, '\x1b[32m');

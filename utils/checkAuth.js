@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { logger } from './logger.js';
+import { logger } from './index.js';
 
 export default (req, res, next) => {
     const token = (req.headers.authorization || '').replace(/Bearer\s?/, '');
@@ -19,13 +19,10 @@ export default (req, res, next) => {
             });
         }
     } else {
-        logger(err, 'alert');
+        logger('You don\'t have an access', 'alert');
 
         res.status(403).json({
             message: 'You don\'t have an access',
         });
     }
-
-    // res.send(token);
-    // next();
 }

@@ -15,12 +15,30 @@ const UserSchema = new Schema({
         type: String,
         required: true,
     },
-    canTrain: [String],
-    language: String,
+    canTrain: {
+        type: Array,
+        default: [],
+    },
+    language: {
+        type: String,
+        default: 'eng'
+    },
     avatarUrl: String,
     weight: Number,
-    measure: String,
-    // Theme: {}
+    measure: {
+        type: String,
+        default: 'kg',
+    },
+    // workouts: {
+    //     type: [WorkoutDaySchema],
+    //     required: true,
+    //     default: [],
+    // }
+    themeId: {
+        type: String,
+        required: true,
+        default: 'basic',
+    }
 }, {
     timestamps: true,
 });
