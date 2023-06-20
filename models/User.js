@@ -37,7 +37,7 @@ const UserSchema = new Schema({
     themeId: {
         type: String,
         required: true,
-        default: 'basic',
+        default: '',
     }
 }, {
     timestamps: true,

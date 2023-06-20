@@ -1,22 +1,15 @@
 import { validationResult } from "express-validator";
 import { logger } from "../utils/index.js";
-import CommonExerciseModel from "../models/CommonExercise.js";
+import { CommonExService } from "../services/index.js";
 
 export const create = async (req, res) => {
     try {
-        const doc = new CommonExerciseModel({
-            name: req.body.name,
-            type: req.body.type,
-            description: req.body.description,
-            previewImg: req.body.previewImg,
-        });
-
-        const commonExTemplate = await doc.save();
-
+        const newEx = await CommonExService.create(req.body);
+ 
         logger('Template has been craeted', 'note');
         res.status(200).json({
             message: 'Template has been craeted',
-            body: commonExTemplate._doc,
+            body: newEx._doc,
         });
     } catch (err) {
         logger('Can\'t create a common exercise', 'alert');
@@ -26,9 +19,9 @@ export const create = async (req, res) => {
     }
 }
 
-export const getAll = async (req, res) => {
+export const getAll = async (_, res) => {
     try {
-        const exercises = await CommonExerciseModel.find();
+        const exercises = await CommonExService.getAll();
 
         logger('A list of exercises has been provided', 'note');
         res.status(200).json(exercises);
@@ -42,10 +35,10 @@ export const getAll = async (req, res) => {
 
 export const getOne = async (req, res) => {
     try {
-        const exercise = await CommonExerciseModel.findById(req.params.id);
+        const ex = await CommonExService.getOne(req.params.id);
 
         logger('The exercise has been provided', 'note');
-        res.status(200).json(exercise);
+        res.status(200).json(ex);
     } catch (err) {
         logger('Could not get the exercise', 'alert');
         res.status(500).json({

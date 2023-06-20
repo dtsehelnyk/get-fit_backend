@@ -1,7 +1,8 @@
 import { body } from 'express-validator';
 
 export const loginValidation = [
-    body('email', 'Wrong email format'),
+    body('email', 'Wrong email format').isEmail(),
+    body('password', '"Password" lenght must be between 6 and 16').isLength({ min: 6, max: 16 }).isString(),
 ];
 
 export const registerValidation = [
