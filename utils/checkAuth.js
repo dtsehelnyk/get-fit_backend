@@ -19,10 +19,10 @@ export default (req, res, next) => {
             });
         }
     } else {
-        logger('You don\'t have an access', 'alert');
+        logger('Unauthorized', 'alert');
 
-        res.status(403).json({
-            message: 'You don\'t have an access',
+        res.status(401).json({
+            message: 'Unauthorized',
         });
     }
 }

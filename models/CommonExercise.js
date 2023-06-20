@@ -19,8 +19,7 @@ const CommonExTemplateSchema = new Schema({
         type: String,
         required: true,
     },
-    // TODO: implement tags for Ex
-    // tags: [String],
+    tags: [String],
     previewImg: String,
     description: String,
 });
