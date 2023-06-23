@@ -15,40 +15,42 @@ export const getOne = async (workoutId) => {
 
   return await WorkoutModel.findOne(
     { days: { $elemMatch: { _id: workoutId } } },
-    { "days.exercises": 1 }
-);
-}
-
-export const create = async (userId, payload) => {
-  if (!userId || !payload) {
-    throw new Error('UserID or Workout payload hasn\'t been provided');
-  }
-
-  return await WorkoutModel.updateOne(
-    {
-        userId,
-    },
-    {
-        $push: {
-            days: payload,
-        }
-    }
+    { 'days.exercises': 1 }
   );
 }
 
-// export const update = async () => {}
-
-export const remove = async (id) => {
-  if (!id) {
-    throw new Error('WorkoutID hasn\'t been provided');
+export const createWorkout = async (userId, payload) => {
+  if (!userId || !payload.date) {
+    throw new Error('userID or Workout payload hasn\'t been provided');
   }
 
-  return await WorkoutModel.findByIdAndRemove(workoutId);
+  return await WorkoutModel.updateOne(
+    { userId },
+    { $push: {
+        days: payload,
+    }}
+  );
+}
+
+export const updateWorkout = async (userId, workoutId, date) => {
+  if (!userId || !workoutId || !date) {
+    throw new Error('userID or Workout payload hasn\'t been provided');
+  }
+
+  return await WorkoutModel.findOneAndUpdate(
+    {
+      userId,
+      'days._id': workoutId, 
+    },
+    { $set: {
+        'days.$.date': date,
+    }}
+  )
 }
 
 export const removeWorkout = async (userId, workoutId) => {
   if (!userId || !workoutId) {
-    throw new Error('WorkoutID hasn\'t been provided');
+    throw new Error('workoutId or userId hasn\'t been provided');
   }
 
   return await WorkoutModel.findOneAndRemove({userId: userId}, {workoutId: workoutId});
