@@ -1,6 +1,5 @@
 import { validationResult } from "express-validator";
 import { logger } from "../utils/index.js";
-import WorkoutModel from "../models/Workout.js";
 import { WorkoutService } from '../services/index.js'
 
 export const getAll = async (req, res) => {
@@ -32,7 +31,7 @@ export const getOne = async (req, res) => {
     }
 } 
 
-export const create = async (req, res) => {
+export const createWorkout = async (req, res) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -44,7 +43,7 @@ export const create = async (req, res) => {
     }
 
     try {
-        await WorkoutService.create(req.userId, req.body);
+        await WorkoutService.createWorkout(req.userId, req.body);
 
         logger(req.body, 'note');        
         res.status(200).json({
@@ -58,62 +57,20 @@ export const create = async (req, res) => {
     }
 }
 
-export const update = async (req, res) => {
-    // const errors = validationResult(req);
-
-    // if (!errors.isEmpty()) {
-    //     logger(errors.errors[0].nestedErrors, 'alert');
-
-    //     return res.status(500).json({
-    //         message: `Workout has not been added. Error: ${JSON.stringify(errors)}`,
-    //     });
-    // }
-
+export const updateWorkout = async (req, res) => {
     try {
-        await WorkoutModel.updateOne(
-            {
-                "days.exercises.sets._id": "648017c11ba364dbe2508707",
-            },
-            {
-                '$set': {
-                    'days.$[el1].exercises.$[el2].sets.$.result': 10
-                }
-            },
-            {
-                arrayFilters: [
-                    { 'el1.exercises': { '$exists': true } },
-                    { 'el2.sets._id': '648017c11ba364dbe2508707' },
-                    // { 'el_3.duration': { '$exists': true } },
-                ]
-            }
-        );
+        await WorkoutService.updateWorkout(req.userId, req.params.workoutId, req.body.date);
 
-        logger('done', 'note');
-        
+        const seccessMessage = 'Workout date has been updated'; 
+
+        logger(seccessMessage, 'note');
         res.status(200).json({
-            message: 'Workout has been changed',
+            message: seccessMessage,
         });
     } catch (err) {
         logger(err, 'alert');
         res.status(500).json({
-            message: `Workout has not been added. Error: ${err}`,
-        });
-    }
-}
-
-// TODO: fix search
-export const remove = async (req, res) => {
-    try {
-        // await WorkoutService.remove(req.params.setId);
-
-        logger('Exercise has been deleted', 'note');
-        res.status(200).json({
-            message: 'Exercise has been deleted',
-        });
-    } catch (err) {
-        logger(err, 'alert');
-        res.status(500).json({
-            message: `Exercise has not been deleted. Error: ${err}`,
+            message: `Workout date has not been updated. Error: ${err}`,
         });
     }
 }
@@ -122,9 +79,11 @@ export const removeWorkout = async (req, res) => {
     try {
         await WorkoutService.removeWorkout(req.userId, req.params.workoutId);
 
-        logger('Workout has been deleted', 'note');
+        const seccessMessage = 'Workout has been deleted'; 
+
+        logger(seccessMessage, 'note');
         res.status(200).json({
-            message: 'Workout has been deleted',
+            message: seccessMessage,
         });
     } catch (err) {
         logger(err, 'alert');

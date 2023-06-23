@@ -3,7 +3,7 @@ import mongoose, { Schema } from "mongoose";
 const ExSetSchema = new Schema({
     load: Number,
     // ???
-    measure: String,
+    // measure: String,
     result: Number,
     additional: String,
 });
@@ -21,6 +21,7 @@ const ExSchema = new Schema({
 
 const WorkoutDaySchema = new Schema({
     date: {
+        // TODO: replace with a Date type
         type: String,
         required: true,
     },
@@ -43,7 +44,6 @@ const WorkoutUserDays = new Schema({
         type: [WorkoutDaySchema],
         required: true,
     },
-    additional: String,
 });
 
 export default mongoose.model('Workout', WorkoutUserDays);

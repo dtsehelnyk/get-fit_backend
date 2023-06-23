@@ -99,19 +99,3 @@ export const login = async (req, res) => {
       return res.status(500).json(err);
   }
 }
-
-// export const logout = async (req, res) => {
-//   try {
-
-//       const token = jwt.sign(
-//           {_id: user._id},
-//           'secretKey',
-//           {expiresIn: '14d'}
-//       );
-      
-//   } catch (err) {
-//       logger('You have not been logged out', 'alert');
-
-//       return res.status(403).json(err);
-//   }
-// }

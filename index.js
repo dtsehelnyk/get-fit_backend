@@ -20,6 +20,7 @@ import {
     AuthController,
     UserController,
     CommonExController,
+    SetController,
     WorkoutController
 } from './controllers/index.js';
 
@@ -57,18 +58,22 @@ app.post('/commonExercises', commonExTemplateValidation, CommonExController.crea
 // app.patch('/commonExercises/:exId', commonExTemplateValidation, CommonExController.update);
 
 app.get('/workouts', checkAuth, WorkoutController.getAll);
-app.post('/workouts', checkAuth, workoutValidation, handleValidationErrors, WorkoutController.create);
 app.get('/workouts/:workoutId', checkAuth, WorkoutController.getOne);
-app.delete('/workouts', checkAuth, WorkoutController.remove);
+app.post('/workouts', checkAuth, workoutValidation, handleValidationErrors, WorkoutController.createWorkout);
+app.patch('/workouts/:workoutId', checkAuth, WorkoutController.updateWorkout);
 app.delete('/workouts/:workoutId', checkAuth, WorkoutController.removeWorkout);
 // TODO: add validation
-app.patch('/workouts/:setId', checkAuth, WorkoutController.update);
+
+app.patch('/workouts/exercises/:exId', checkAuth, SetController.createExSet);
+app.patch('/workouts/sets/:setId', checkAuth, SetController.updateExSet);
+app.delete('/workouts/sets/:setId', checkAuth, SetController.removeExSet);
+
+// app.patch('/workouts/updateExResult/:setId', checkAuth, WorkoutController.updateExResult);
 
 app.listen(PORT, (err) => {
     if(err) {
         return logger('--- App doesn\'t work', 'error');
     }
 
-    // console.error('\x1b[32m','App has been started', '\x1b[32m');
     logger('--- App has been started', 'success')
 });
