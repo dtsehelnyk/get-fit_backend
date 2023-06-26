@@ -21,7 +21,8 @@ import {
     UserController,
     CommonExController,
     SetController,
-    WorkoutController
+    WorkoutController,
+    ExController
 } from './controllers/index.js';
 
 const PORT = 5050;
@@ -57,6 +58,7 @@ app.post('/commonExercises', commonExTemplateValidation, CommonExController.crea
 // app.delete('/commonExercises/:exId', commonExTemplateValidation, CommonExController.remove);
 // app.patch('/commonExercises/:exId', commonExTemplateValidation, CommonExController.update);
 
+// WORKOUTS
 app.get('/workouts', checkAuth, WorkoutController.getAll);
 app.get('/workouts/:workoutId', checkAuth, WorkoutController.getOne);
 app.post('/workouts', checkAuth, workoutValidation, handleValidationErrors, WorkoutController.createWorkout);
@@ -64,7 +66,13 @@ app.patch('/workouts/:workoutId', checkAuth, WorkoutController.updateWorkout);
 app.delete('/workouts/:workoutId', checkAuth, WorkoutController.removeWorkout);
 // TODO: add validation
 
-app.patch('/workouts/exercises/:exId', checkAuth, SetController.createExSet);
+//EXERCISES
+app.post('/workouts/:workoutId/exercises', checkAuth, ExController.createEx);
+app.patch('/workouts/exercises/:exId', checkAuth, ExController.updateEx);
+app.delete('/workouts/exercises/:exId', checkAuth, ExController.removeEx);
+
+// SETS
+app.patch('/workouts/exercises/:exId/sets', checkAuth, SetController.createExSet);
 app.patch('/workouts/sets/:setId', checkAuth, SetController.updateExSet);
 app.delete('/workouts/sets/:setId', checkAuth, SetController.removeExSet);
 

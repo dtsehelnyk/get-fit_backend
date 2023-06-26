@@ -61,11 +61,11 @@ export const updateWorkout = async (req, res) => {
     try {
         await WorkoutService.updateWorkout(req.userId, req.params.workoutId, req.body.date);
 
-        const seccessMessage = 'Workout date has been updated'; 
+        const successMessage = 'Workout date has been updated'; 
 
-        logger(seccessMessage, 'note');
+        logger(successMessage, 'note');
         res.status(200).json({
-            message: seccessMessage,
+            message: successMessage,
         });
     } catch (err) {
         logger(err, 'alert');
@@ -79,11 +79,11 @@ export const removeWorkout = async (req, res) => {
     try {
         await WorkoutService.removeWorkout(req.userId, req.params.workoutId);
 
-        const seccessMessage = 'Workout has been deleted'; 
+        const successMessage = 'Workout has been deleted'; 
 
-        logger(seccessMessage, 'note');
+        logger(successMessage, 'note');
         res.status(200).json({
-            message: seccessMessage,
+            message: successMessage,
         });
     } catch (err) {
         logger(err, 'alert');
