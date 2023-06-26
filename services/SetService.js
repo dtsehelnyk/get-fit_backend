@@ -1,13 +1,11 @@
 import WorkoutModel from '../models/Workout.js';
 
-// SETS
-
 export const createExSet = async (userId, exId, payload) => {
   if (!userId || !exId || !payload) {
     throw new Error('Set data hasn\'t been provided');
   }
 
-  await WorkoutModel.findOneAndUpdate(
+  return await WorkoutModel.updateOne(
     {
       userId,
       'days.exercises._id': exId,
@@ -28,19 +26,19 @@ export const updateExSet = async (userId, setId, newResult) => {
 
   const path = 'days.$[el1].exercises.$[el2].sets.$.';
 
-  // TODO: add wrong userID check
-  await WorkoutModel.findOneAndUpdate(
+  return await WorkoutModel.updateOne(
     {
-      userId,
+      userId: userId,
       'days.exercises.sets._id': setId,
     },
+    // TODO: check accuracy
     { $set: {
       [path + 'result']: newResult?.result,
       [path + 'load']: newResult?.load,
       [path + 'additional']: newResult?.additional,
     }},
     { arrayFilters: [
-      { 'el1.exercises': { '$exists': true } },
+      { 'el1.exercises': { $exists: true } },
       { 'el2.sets._id': setId },
     ]}
   );
@@ -52,7 +50,7 @@ export const removeExSet = async (userId, setId) => {
     throw new Error('Set hasn\'t been provided for removing');
   }
 
-  await WorkoutModel.findOneAndUpdate(
+  return await WorkoutModel.updateOne(
     { userId },
     { $pull: { 'days.$[el1].exercises.$[el2].sets': setId, } },
     { arrayFilters: [
