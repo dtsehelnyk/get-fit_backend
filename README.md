@@ -10,4 +10,4 @@ TODOS:
 * add opportunity to create custom Exercises for Users
 * add TypeScript
 * implement canTrain property for Users
-* 
+
