@@ -52,7 +52,11 @@ export const removeExSet = async (userId, setId) => {
 
   return await WorkoutModel.updateOne(
     { userId },
-    { $pull: { 'days.$[el1].exercises.$[el2].sets': setId, } },
+    { $pull: 
+      { 'days.$[el1].exercises.$[el2].sets':
+        { _id: setId },
+      }
+    },
     { arrayFilters: [
       { 'el1.exercises': { '$exists': true } },
       { 'el2.sets._id': setId },

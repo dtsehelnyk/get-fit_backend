@@ -37,15 +37,18 @@ export const updateEx = async (userId, exId, name) => {
   );
 }
 
-export const removeEx = async (userId, workoutId, exId) => {
+export const removeEx = async (userId, exId) => {
   if (!userId || !exId) {
     throw new Error('userId, workoutId or exerciseId payload hasn\'t been provided');
   }
 
-  // return await WorkoutModel.updateOne(
-  //   { userId },
-  //   { $push: {
-  //       days: payload,
-  //   }}
-  // );
+  return await WorkoutModel.updateOne(
+    {
+      userId: userId,
+      'days.exercises._id': exId,
+    },
+    { $pull: {
+      'days.$.exercises': { _id: exId },
+    }}
+  );
 }

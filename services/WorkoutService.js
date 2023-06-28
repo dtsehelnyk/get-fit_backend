@@ -1,22 +1,39 @@
+import { ObjectId } from 'mongodb';
 import WorkoutModel from '../models/Workout.js';
 
 export const getAll = async (userId) => {
   if (!userId) {
-    throw new Error('UserID hasn\'t been provided');
+    throw new Error('userID hasn\'t been provided');
   }
 
   return await WorkoutModel.findOne({userId});
 }
 
-export const getOne = async (workoutId) => {
-  if (!workoutId) {
-    throw new Error('WorkoutID hasn\'t been provided');
+export const getOne = async (userId, workoutId) => {
+  if (!userId || !workoutId) {
+    throw new Error('workoutID hasn\'t been provided');
   }
 
-  return await WorkoutModel.findOne(
-    { days: { $elemMatch: { _id: workoutId } } },
-    { 'days.exercises': 1 }
-  );
+  return await WorkoutModel.aggregate([
+    {
+      $match: {
+        userId: new ObjectId(userId)
+      }
+    },
+    {
+      $unwind: "$days"
+    },
+    {
+      $match: {
+        "days._id": new ObjectId(workoutId)
+      }
+    },
+    {
+      $replaceRoot: {
+        newRoot: "$days"
+      }
+    }
+  ]);
 }
 
 export const createWorkout = async (userId, payload) => {
@@ -25,7 +42,7 @@ export const createWorkout = async (userId, payload) => {
   }
 
   return await WorkoutModel.updateOne(
-    { userId },
+    { userId: userId },
     { $push: {
         days: payload,
     }}
@@ -34,12 +51,12 @@ export const createWorkout = async (userId, payload) => {
 
 export const updateWorkout = async (userId, workoutId, date) => {
   if (!userId || !workoutId || !date) {
-    throw new Error('userID or Workout payload hasn\'t been provided');
+    throw new Error('userID, workoutId or workout payload hasn\'t been provided');
   }
 
-  return await WorkoutModel.findOneAndUpdate(
+  return await WorkoutModel.updateOne(
     {
-      userId,
+      userId: userId,
       'days._id': workoutId, 
     },
     { $set: {

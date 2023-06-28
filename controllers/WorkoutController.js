@@ -1,32 +1,35 @@
 import { validationResult } from "express-validator";
-import { logger } from "../utils/index.js";
+import { logger, checkUpdateRequestResult } from "../utils/index.js";
 import { WorkoutService } from '../services/index.js'
 
-export const getAll = async (req, res) => {
+export const getAll = async ({ userId }, res) => {
     try {
-        const doc = await WorkoutService.getAll(req.userId);
+        const doc = await WorkoutService.getAll(userId);
 
         logger('A list of workouts has been provided', 'note');
         res.status(200).json(doc);
     } catch (err) {
-        logger('Could not get a list of workouts', 'alert');
+        const errorMessage = 'Could not get a list of workouts';
+
+        logger(errorMessage, 'alert');
         res.status(500).json({
-            message: `Could not get a list of workouts. Error: ${err}`,
+            message: `${errorMessage}. Error: ${err}`,
         });
     }
 } 
 
-export const getOne = async (req, res) => {
+export const getOne = async ({ userId, params }, res) => {
     try {
-        const doc = await WorkoutService.getOne(req.params.workoutId);
+        const doc = await WorkoutService.getOne(userId, params.workoutId);
 
         logger('A workout has been provided', 'note');
-        res.status(200).json(doc?.days[0]);
+        res.status(200).json(doc);
         
     } catch (err) {
-        logger('Could not get a workout', 'alert');
+        const errorMessage = 'Could not get a workout';
+        logger(errorMessage, 'alert');
         res.status(500).json({
-            message: `Could not get a workout. Error: ${err}`,
+            message: `${errorMessage}. Error: ${err}`,
         });
     }
 } 
@@ -43,12 +46,15 @@ export const createWorkout = async (req, res) => {
     }
 
     try {
-        await WorkoutService.createWorkout(req.userId, req.body);
+        const response = await WorkoutService.createWorkout(req.userId, req.body);
+        const { isModified, message } = checkUpdateRequestResult(response, 'workouts');
 
-        logger(req.body, 'note');        
-        res.status(200).json({
-            message: 'Workout has been added',
-        });
+        if (!isModified) {
+            return res.status(404).json({ message });
+        }
+
+        logger(message, 'note');        
+        res.status(200).json({ message });
     } catch (err) {
         logger(err, 'alert');
         res.status(500).json({
@@ -59,14 +65,15 @@ export const createWorkout = async (req, res) => {
 
 export const updateWorkout = async (req, res) => {
     try {
-        await WorkoutService.updateWorkout(req.userId, req.params.workoutId, req.body.date);
+        const response = await WorkoutService.updateWorkout(req.userId, req.params.workoutId, req.body.date);
+        const { isModified, message } = checkUpdateRequestResult(response, 'workouts');
 
-        const successMessage = 'Workout date has been updated'; 
+        if (!isModified) {
+            return res.status(404).json({ message })
+        }
 
-        logger(successMessage, 'note');
-        res.status(200).json({
-            message: successMessage,
-        });
+        logger(message, 'note');
+        res.status(200).json({ message });
     } catch (err) {
         logger(err, 'alert');
         res.status(500).json({
@@ -77,14 +84,15 @@ export const updateWorkout = async (req, res) => {
 
 export const removeWorkout = async (req, res) => {
     try {
-        await WorkoutService.removeWorkout(req.userId, req.params.workoutId);
+        const response = await WorkoutService.removeWorkout(req.userId, req.params.workoutId);
+        const { isModified, message } = checkUpdateRequestResult(response, 'workouts');
 
-        const successMessage = 'Workout has been deleted'; 
+        if (!isModified) {
+            return res.status(404).json({ message })
+        }
 
-        logger(successMessage, 'note');
-        res.status(200).json({
-            message: successMessage,
-        });
+        logger(message, 'note');
+        res.status(200).json({ message });
     } catch (err) {
         logger(err, 'alert');
         res.status(500).json({

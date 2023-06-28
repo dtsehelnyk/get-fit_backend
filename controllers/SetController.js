@@ -1,9 +1,9 @@
 import { SetService } from '../services/index.js';
 import { checkUpdateRequestResult, logger } from '../utils/index.js';
 
-export const createExSet = async (req, res) => {
+export const createExSet = async ({ userId, params, body }, res) => {
   try {
-    const response = await SetService.createExSet(req.userId, req.params.exId, req.body);
+    const response = await SetService.createExSet(userId, params.exId, body);
     const { isModified, message } = checkUpdateRequestResult(response, 'Exercise');
        
     if (!isModified) {
@@ -19,9 +19,9 @@ export const createExSet = async (req, res) => {
   }
 }
 
-export const updateExSet = async (req, res) => {
+export const updateExSet = async ({ userId, params, body }, res) => {
   try {
-    const response = await SetService.updateExSet(req.userId, req.params.setId, req.body.data);
+    const response = await SetService.updateExSet(userId, params.setId, body.data);
     const { isModified, message } = checkUpdateRequestResult(response, 'Set');
 
     if (!isModified) {
@@ -37,17 +37,15 @@ export const updateExSet = async (req, res) => {
   }
 }
 
-// TODO: fix search
-export const removeExSet = async (req, res) => {
+export const removeExSet = async ({ userId, params }, res) => {
   try {
-    const response = await SetService.removeExSet(req.userId, req.params.setId);
+    const response = await SetService.removeExSet(userId, params.setId);
     const { isModified, message } = checkUpdateRequestResult(response)
       
     if (!isModified) {
-      res.status(404).json({ message });
+      return res.status(404).json({ message });
     }
 
-    logger(successMessage, 'note');
     res.status(200).json({ message });
   } catch (err) {
     logger(err, 'alert');
