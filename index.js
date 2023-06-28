@@ -51,10 +51,10 @@ app.delete('/users/me', checkAuth, UserController.remove);
 app.patch('/users/me', checkAuth, updateValidation, handleValidationErrors, UserController.update);
 // app.patch('/users/:userId', checkAuth, UserController.update);
 
-app.get('/commonExercises', CommonExController.getAll);
-app.get('/commonExercises/:id', CommonExController.getOne);
+app.get('/commonExercises', checkAuth, CommonExController.getAll);
+app.get('/commonExercises/:id', checkAuth, CommonExController.getOne);
 // TODO: add roles or security check
-app.post('/commonExercises', commonExTemplateValidation, CommonExController.create);
+app.post('/commonExercises', checkAuth, commonExTemplateValidation, CommonExController.create);
 // app.delete('/commonExercises/:exId', commonExTemplateValidation, CommonExController.remove);
 // app.patch('/commonExercises/:exId', commonExTemplateValidation, CommonExController.update);
 

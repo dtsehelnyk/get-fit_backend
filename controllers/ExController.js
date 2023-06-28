@@ -43,14 +43,14 @@ export const updateEx = async ({ userId, params, body }, res) => {
 export const removeEx = async ({ userId, params }, res) => {
 
   try {
-    await ExService.removeEx(userId, params.exId);
+    const response = await ExService.removeEx(userId, params.exId);
+    const { isModified, message } = checkUpdateRequestResult(response);
 
-    const successMessage = 'Exercise has been removed';
+    if (!isModified) {
+      return res.status(404).json({ message });
+    }
 
-    logger(successMessage, 'note');
-    res.status(200).json({
-      message: successMessage,
-    });
+    res.status(200).json({ message });
   } catch (err) {
     logger(err, 'alert');
     res.status(500).json({
