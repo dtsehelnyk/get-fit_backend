@@ -1,7 +1,5 @@
 import WorkoutModel from '../models/Workout.js';
 
-// Ex
-
 export const createEx = async (userId, workoutId, ex) => {
   if (!userId || !workoutId || !ex?.name) {
     throw new Error('userId, workoutId or Exercise payload hasn\'t been provided');

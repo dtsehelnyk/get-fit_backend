@@ -10,4 +10,5 @@ TODOS:
 * add opportunity to create custom Exercises for Users
 * add TypeScript
 * implement canTrain property for Users
+* add username and email coincidence during user.update
 * 

@@ -13,10 +13,14 @@ export const registerValidation = [
 ];
 
 export const updateValidation = [
-    ...registerValidation,
+    // ...registerValidation,
     body('canTrain', '"canTrain" should be an Array of Strings').isArray().optional(),
     body('language', 'Incorrect format of "language"').notEmpty().isString().optional(),
     body('measure', 'Incorrect format of "measure"').notEmpty().isString().optional(),
     body('themeId', 'Incorrect format of "themeId"').notEmpty().isMongoId().optional(),
     body('weight', 'Incorrect format of "weight"').notEmpty().isInt({gt: 0, lt:500}).optional(),
+    body('avatarUrl', 'Wrong url for image').optional().isURL(),
+    body('email', 'Wrong email format').isEmail().optional(),
+    body('username', '"username" length must be between 3 and 24').isLength({ min: 3, max: 24 }).isString().optional(),
+    body('password', '"Password" lenght must be between 6 and 16').isLength({ min: 6, max: 16 }).isString().optional(),
 ]
